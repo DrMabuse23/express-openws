@@ -18,5 +18,7 @@
   "trailing": true,
   "smarttabs": true,
   "white": true,
-  "globals": {}
+  "globals": {
+    "module": true
+  }
 }
