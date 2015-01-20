@@ -34,24 +34,24 @@ var dbConfiguration = null;
  *
  * @private
  */
-var _readConfig = function (cb) {
+var _readConfig = function (callback) {
   jf.readFile(_connectionJson, function (err, obj) {
     if (err) {
-      return cb(err);
+      return callback(err);
     }
-    return cb(null, obj);
+    return callback(null, obj);
   });
 };
 /**
  * @param {object} obj
  * @private
  */
-var _validateConfig = function (cb, obj) {
+var _validateConfig = function (obj, callback) {
   joi.validate(obj, schema, function (err, value) {
     if (err) {
-      return cb(err);
+      return callback(err);
     }
-    return cb(null, value);
+    return callback(null, value);
   });
 };
 
@@ -59,19 +59,19 @@ var getConnection = function (cb) {
   //console.log(args);
   async.waterfall([
     function (callback) {
-      var config = _readConfig(cb);
+      var config = _readConfig(callback);
       callback(null, config);
     },
     function (config, callback) {
-      var validate = _validateConfig(cb, config);
+      var validate = _validateConfig(config, callback);
       callback(null, validate, config);
     },
     function (validate, config, callback) {
-      dbConfiguration = config;
-      if (validate) {
-        return callback(validate);
-      }
-      callback(null, config);
+      console.log(validate, config);
+      //if (validate) {
+      //  callback(validate, null);
+      //}
+      //callback(null, config);
     }
   ], function (err, result) {
     if (err) {
