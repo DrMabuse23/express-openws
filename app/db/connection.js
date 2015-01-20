@@ -4,6 +4,7 @@ var jf = require('jsonfile');
 var util = require('util');
 var schema = require('../schema/open-ws');
 var _ = require('lodash');
+var async = require('async');
 /**
  * @type {string}
  * @private
@@ -34,7 +35,7 @@ var dbConfiguration = null;
  * @private
  */
 var _readConfig = function () {
-  return jf.readFile(_connectionJson, function (err, obj) {
+  jf.readFile(_connectionJson, function (err, obj) {
     if (err) {
       throw err;
     }
@@ -46,31 +47,41 @@ var _readConfig = function () {
  * @private
  */
 var _validateConfig = function (obj) {
-  return joi.validate(obj, schema, function (err, value) {
+  joi.validate(obj, schema, function (err, value) {
     if (err) {
       return err;
     }
     return value;
   });
 };
-/**
- *
- */
-var _setConfig = function () {
-  var config = _readConfig();
-  var validate = _validateConfig(config);
-  if (_.isNull(validate)) {
-    _accessToken = config.access_token;
-    _email = config.email;
-    return config;
-  }
-};
 
-module.exports = function () {
-  dbConfiguration = _setConfig();
-  if (_.isObject(dbConfiguration)) {
-    console.log(dbConfiguration);
-    return dbConfiguration;
-  }
-  return false;
+var getConnection = function (args, cb) {
+  //console.log(args);
+  async.waterfall([
+    function (callback) {
+      var config = _readConfig();
+      callback(null, config);
+    },
+    function (config, callback) {
+      var validate = _validateConfig(config);
+      callback(null, validate, config);
+    },
+    function (validate, config, callback) {
+      dbConfiguration = config;
+      if (validate) {
+        return callback('Can`t read config');
+      }
+      callback(null, config);
+    }
+  ], function (err, result) {
+    if (err) {
+      return cb(err);
+    }
+    if(result) {
+      return cb(null, result);
+    }
+    return cb(null);
+  });
+
 };
+module.exports = getConnection;
