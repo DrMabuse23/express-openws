@@ -9,7 +9,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-console.log(JSON.stringify(db()));
+db(function (err, result) {
+  console.log(err, result);
+});
 //app.db = db('openws');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

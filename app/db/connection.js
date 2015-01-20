@@ -34,53 +34,51 @@ var dbConfiguration = null;
  *
  * @private
  */
-var _readConfig = function () {
+var _readConfig = function (cb) {
   jf.readFile(_connectionJson, function (err, obj) {
     if (err) {
-      throw err;
+      return cb(err);
     }
-    return obj;
+    return cb(null, obj);
   });
 };
 /**
  * @param {object} obj
  * @private
  */
-var _validateConfig = function (obj) {
+var _validateConfig = function (cb, obj) {
   joi.validate(obj, schema, function (err, value) {
     if (err) {
-      return err;
+      return cb(err);
     }
-    return value;
+    return cb(null, value);
   });
 };
 
-var getConnection = function (args, cb) {
+var getConnection = function (cb) {
   //console.log(args);
   async.waterfall([
     function (callback) {
-      var config = _readConfig();
+      var config = _readConfig(cb);
       callback(null, config);
     },
     function (config, callback) {
-      var validate = _validateConfig(config);
+      var validate = _validateConfig(cb, config);
       callback(null, validate, config);
     },
     function (validate, config, callback) {
       dbConfiguration = config;
       if (validate) {
-        return callback('Can`t read config');
+        return callback(validate);
       }
       callback(null, config);
     }
   ], function (err, result) {
     if (err) {
       return cb(err);
-    }
-    if(result) {
+    } else {
       return cb(null, result);
     }
-    return cb(null);
   });
 
 };
