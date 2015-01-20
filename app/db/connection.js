@@ -68,10 +68,12 @@ var getConnection = function (cb) {
     },
     function (validate, config, callback) {
       console.log(validate, config);
-      //if (validate) {
-      //  callback(validate, null);
-      //}
-      //callback(null, config);
+      if (validate) {
+        callback(validate, null);
+      } else {
+        callback(null, config);
+      }
+
     }
   ], function (err, result) {
     if (err) {
