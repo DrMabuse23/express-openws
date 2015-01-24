@@ -30,3 +30,4 @@ node_modules
 .idea
 .DS_Store
 app/config/openws.json
+app/config/parse.json
