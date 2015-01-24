@@ -2,10 +2,11 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var dbConfiguration = require('./db/config');
+var auth = require('./db/auth-loader');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
@@ -22,8 +23,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req, res, next) {
-  dbConfiguration(function (config) {
-    req.dbConfiguration = config;
+  var schema = require('./schema/open-ws');
+  auth([__dirname + '/config/openws.json', schema], function (config) {
+    req.openWsAuth = config;
+    next();
+  });
+});
+app.use(function (req, res, next) {
+  var schema = require('./schema/parse');
+  auth([__dirname + '/config/parse.json', schema], function (config) {
+    req.parseAuth = config;
     next();
   });
 });
