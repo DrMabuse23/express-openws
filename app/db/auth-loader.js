@@ -1,14 +1,14 @@
 'use strict';
 var joi = require('joi');
 var jf = require('jsonfile');
-var schema = require('../schema/open-ws');
 var async = require('async');
 /**
  * @type {string}
  * @private
  * @return {object}
  */
-var _connectionJson = __dirname + '/../config/openws.json';
+var _connectionJson = null;
+var _schema = null;
 /**
  *
  * @private
@@ -21,13 +21,14 @@ var _readConfig = function (callback) {
  * @private
  */
 var _validateConfig = function (obj, callback) {
-  joi.validate(obj, schema, callback);
+  joi.validate(obj, _schema, callback);
 };
 /**
  *
- * @param cb
  */
-var getDbConfig = function (cb) {
+var getDbConfig = function (args, cb) {
+  _connectionJson = args[0];
+  _schema = args[1];
   async.waterfall([
     _readConfig,
     function (config, callback) {
@@ -42,6 +43,5 @@ var getDbConfig = function (cb) {
       });
     }
   ], cb);
-
 };
 module.exports = getDbConfig;
