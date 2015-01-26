@@ -9,7 +9,8 @@ var joi = require('joi');
  */
 var parseSchema = joi.object().keys({
   applicationId: [joi.string(), joi.number()],
-  restApiKey: [joi.string(), joi.number()]
-}).with('applicationId', 'restApiKey');
+  restApiKey: [joi.string(), joi.number()],
+  javascriptKey: [joi.string(), joi.number()]
+}).with('applicationId', 'restApiKey', 'javascriptKey');
 
 module.exports = parseSchema;

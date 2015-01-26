@@ -29,9 +29,11 @@ app.use(function (req, res, next) {
     next();
   });
 });
+
 app.use(function (req, res, next) {
   var schema = require('./schema/parse');
   auth([__dirname + '/config/parse.json', schema], function (config) {
+    console.log(config);
     req.parseAuth = config;
     next();
   });
