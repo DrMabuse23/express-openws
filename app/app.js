@@ -33,8 +33,17 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
   var schema = require('./schema/parse');
   auth([__dirname + '/config/parse.json', schema], function (config) {
-    console.log(config);
+    //console.log(config);
     req.parseAuth = config;
+    next();
+  });
+});
+
+app.use(function (req, res, next) {
+  var schema = require('./schema/firebase');
+  auth([__dirname + '/config/firebase.json', schema], function (config) {
+    //console.log(config);
+    req.fireBaseAuth = config;
     next();
   });
 });

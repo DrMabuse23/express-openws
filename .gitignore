@@ -31,3 +31,4 @@ node_modules
 .DS_Store
 app/config/openws.json
 app/config/parse.json
+app/config/firebase.json

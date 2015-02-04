@@ -1,0 +1,4 @@
+{
+  "token": "<YOUR_FIREBASE_SECRET>"
+}
+read https://github.com/firebase/firebase-token-generator-node
