@@ -2,6 +2,8 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+var Firebase = require('firebase');
+var FirebaseTokenGenerator = require('firebase-token-generator');
 
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -44,7 +46,18 @@ app.use(function (req, res, next) {
   auth([__dirname + '/config/firebase.json', schema], function (config) {
     //console.log(config);
     req.fireBaseAuth = config;
-    next();
+    var tokenGenerator = new FirebaseTokenGenerator(req.fireBaseAuth.token);
+    var token = tokenGenerator.createToken({uid: '1'});
+    var ref = new Firebase('https://' + req.fireBaseAuth.db + '/');
+    ref.authWithCustomToken(token, function (error, authData) {
+      if (error) {
+        console.log('Login Failed!', error);
+      } else {
+        console.log('Login Succeeded!', authData);
+        req.firebaseDb = ref;
+      }
+      next();
+    });
   });
 });
 

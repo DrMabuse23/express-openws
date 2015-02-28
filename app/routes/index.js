@@ -50,7 +50,6 @@ router.get('/', function (req, res, next) {
       } else {
         key = 0;
       }
-
       //console.log(sample[key]);
     });
   }
@@ -58,23 +57,8 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/firebase', function (req, res, next) {
-  var Firebase = require('firebase');
-  var FirebaseTokenGenerator = require('firebase-token-generator');
-  var tokenGenerator = new FirebaseTokenGenerator(req.fireBaseAuth.token);
-  var token = tokenGenerator.createToken({uid: '1', email: 'drmabuse@posteo.de'},
-    {admin: true, debug: true});
-  var ref = new Firebase('https://' + req.fireBaseAuth.db + '/');
-  debugger;
-  //ref.authWithCustomToken(req.fireBaseAuth.token, function (error, authData) {
-  //  if (error) {
-  //    console.log('Login Failed!', error);
-  //
-  //  } else {
-  //
-  //    console.log('Login Succeeded!', authData);
-  //  }
-  //});
-  res.render('firebase', {token: token});
+  console.log(req.firebaseDb);
+  res.render('firebase', {token: 'works'});
 
   //console.log('token', token);
 });
